@@ -2,46 +2,66 @@ defmodule WeatherPhoenix.PageController do
 	use WeatherPhoenix.Web, :controller
 
 	def index(conn, _params) do
-	render conn, "index.html"
+		render conn, "index.html"
 	end
 
 	def geocode(conn, %{"address" => address}) do
 		address
 		|> parse_address
-		|> 
 	end
 
-	def weather(conn, %{"id" => id}) do
-		render conn, "weather.html", id: id
+	def weather(conn, %{"location" => location}) do
+		render conn, "weather.html", 
+		weather:
+		location
+		|> to_string
+		|> get_location
+		|> get_weather
 	end
 
 	def parse_address(address) do
 		String.replace(address, " ", "+")
 	end	
 
-	# Hits the forecast.io api
-	def request_weather(location) do
+	def get_location(address) do
+		{status, list} = JSON.decode request_coordinates(address).body
+		if status == :ok do
+				results = list["results"] |> List.first
+				latitude = results["geometry"]["location"]["lat"]
+				longitude = results["geometry"]["location"]["lng"]
+				"#{latitude},#{longitude}"
+			else
+				IO.puts "Error processing: #{status} code returned"
+		end
+	end
+
+	def get_weather(location) do
+		{status, list} = JSON.decode request_weather(location).body
+		if status == :ok do
+			currently(list)
+		else
+			IO.puts "Error: #{status} status returned"
+		end
+	end
+
+	def currently(list) do
+		list = list["currently"]
+		trunc list["apparentTemperature"]
+	end
+
+	defp request_weather(location) do
 		HTTPotion.get "#{forcast_io_full_url(location)}"
 	end
 
-	# Hits the Google Maps API 
-	def request_coordinates(address) do
+	defp request_coordinates(address) do
 		HTTPotion.get google_full_url(address)
 	end
 
-	def google_full_url(address) do
-		"https://maps.googleapis.com/maps/api/geocode/json?address=#{address}&key=#{google_api_key}"
+	defp google_full_url(address) do
+		"https://maps.googleapis.com/maps/api/geocode/json?address=#{address}&key=AIzaSyDiglohQeePIsYHgHSLNqWeFhLg_xqxnV0"
 	end
 
-	def forcast_io_full_url(location) do
-		"https://api.forecast.io/forecast/#{forcast_io_api_key}/#{location}"
-	end
-
-	defp forcast_io_api_key do
-		"80f71455dfe8a1e882ba6adf75b6ccf1"
-	end
-
-	defp google_api_key do
-		"AIzaSyDiglohQeePIsYHgHSLNqWeFhLg_xqxnV0"
+	defp forcast_io_full_url(location) do
+		"https://api.forecast.io/forecast/80f71455dfe8a1e882ba6adf75b6ccf1/#{location}"
 	end
 end

@@ -18,7 +18,7 @@ defmodule WeatherPhoenix.Router do
 
     get "/", PageController, :index
     post "/weather", PageController, :geocode
-    get "/weather/:id", PageController, :weather
+    get "/weather/:location", PageController, :weather
   end
 
   # Other scopes may use custom stacks.

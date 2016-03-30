@@ -1,1 +1,4 @@
-test <%= @id %>
+<div class="jumbotron">
+	<h1>It is <%= @weather %> degress outside.</h1>
+	<p>Hot reloading is sweet</p>
+</div>
