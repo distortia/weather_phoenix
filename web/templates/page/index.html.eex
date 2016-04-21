@@ -1,9 +1,4 @@
 <div class="jumbotron">
-  <h2>Find the weather in your area</h2>
-  <form action="">
-     <div class="form-group">
-      <input type="email" class="form-control" id="location" placeholder="Address">
-    </div>
-    <button type="submit" class="btn btn-primary">Let's Go!</button>
-  </form>
-</div>
+  <h2>Find the weather in your location</h2>
+
+<%= render "form.html", action: page_path(@conn, :set_weather), conn: @conn%>

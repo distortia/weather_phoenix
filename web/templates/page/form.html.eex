@@ -1,0 +1,4 @@
+<%= form_for @conn, @action, [name: :get_location], fn f -> %>
+  <%= text_input f, :location, placeholder: "Address" %>
+  <%= submit "Search" %>
+<% end %>

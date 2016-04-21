@@ -1,4 +1,5 @@
 <div class="jumbotron">
 	<h1>It is <%= @weather %> degress outside.</h1>
-	<p>Hot reloading is sweet</p>
+	<h2>Search again</h2>
+	<%= render "form.html", action: page_path(@conn, :set_weather), conn: @conn%>
 </div>

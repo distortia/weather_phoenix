@@ -5,22 +5,25 @@ defmodule WeatherPhoenix.PageController do
 		render conn, "index.html"
 	end
 
-	def geocode(conn, %{"address" => address}) do
-		address
-		|> parse_address
+	def set_weather(conn, %{"get_location" => location}) do
+		location = 
+		location["location"]
+		|> parse_location
+
+		redirect(conn, to: "/weather/#{location}")
 	end
 
-	def weather(conn, %{"location" => location}) do
-		render conn, "weather.html", 
-		weather:
+	def get_weather(conn, %{"location" => location}) do
+		weather = 
 		location
 		|> to_string
 		|> get_location
 		|> get_weather
+		render(conn, "weather.html", weather: weather)
 	end
 
-	def parse_address(address) do
-		String.replace(address, " ", "+")
+	def parse_location(location) do
+		String.replace(location, " ", "+")
 	end	
 
 	def get_location(address) do

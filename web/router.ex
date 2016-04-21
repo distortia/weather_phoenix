@@ -17,8 +17,8 @@ defmodule WeatherPhoenix.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    post "/weather", PageController, :geocode
-    get "/weather/:location", PageController, :weather
+    post "/weather", PageController, :set_weather
+    get "/weather/:location", PageController, :get_weather
   end
 
   # Other scopes may use custom stacks.
